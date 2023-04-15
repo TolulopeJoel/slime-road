@@ -10,20 +10,12 @@ from .serializers import ProductSerializer
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    
+    def perform_create(self, serializer):
+        name = serializer.validated_data.get('name')
+        slug = slugify(name)
 
-    def create(self, request, *args, **kwargs):
-        data = {}
-
-        for key, value in request.data.items():
-            data[key] = value
-
-        data['slug'] = slugify(request.data.get('name'))
-        data['creator'] = request.user
-
-        product = Product(**data)
-        product.save()
-
-        return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
+        return serializer.save(creator=self.request.user, slug=slug)
 
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
