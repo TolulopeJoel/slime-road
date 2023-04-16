@@ -11,12 +11,12 @@ class OrderViewset(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
         try:
-            product_id = self.request.data.get('product_id')
+            product_id = request.data.get('product_id')
             product = Product.objects.get(id=product_id)
 
-            payment_price = serializer.validated_data.get('price')
+            payment_price = int(request.data.get('price'))
             product_price = product.price
             paid_payment = False
 
@@ -28,7 +28,10 @@ class OrderViewset(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            return serializer.save(product=product, price=payment_price, paid=paid_payment)
+            order = Order(product=product, price=payment_price, paid=paid_payment)
+            order.save()
+            
+            return Response(OrderSerializer(order.data), status=status.HTTP_201_CREATED)
         except Product.DoesNotExist:
             return Response(
                 {'detail': 'This product is not available'},

@@ -1,7 +1,6 @@
 from django.utils.text import slugify
 
 from rest_framework import generics
-from rest_framework.views import Response, status
 
 from .models import Product
 from .serializers import ProductSerializer
