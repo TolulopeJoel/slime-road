@@ -1,10 +1,12 @@
+from decimal import Decimal
+
 from rest_framework import viewsets
 from rest_framework.views import Response, status
 
+from shop.models import Product
+
 from .models import Order
 from .serailizers import OrderSerializer
-
-from shop.models import Product
 
 
 class OrderViewset(viewsets.ModelViewSet):
@@ -16,7 +18,7 @@ class OrderViewset(viewsets.ModelViewSet):
             product_id = request.data.get('product_id')
             product = Product.objects.get(id=product_id)
 
-            payment_price = int(request.data.get('price'))
+            payment_price = Decimal(request.data.get('price'))
             product_price = product.price
             paid_payment = False
 
