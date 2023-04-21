@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from cloudinary.models import CloudinaryField
+
 
 class Product(models.Model):
     creator = models.ForeignKey(
@@ -10,7 +12,7 @@ class Product(models.Model):
     )
     name = models.CharField(max_length=200)
     description = models.TextField()
-    image = models.ImageField(upload_to='product/image/%Y/%m/%d')
+    image = CloudinaryField('image')
     # link to the creator's product. This could be anything digital (ex: pdf, video, notion page)
     link = models.URLField()
     slug = models.SlugField()

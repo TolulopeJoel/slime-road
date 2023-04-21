@@ -12,7 +12,11 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from datetime import timedelta
+from environs import Env
 from pathlib import Path
+
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
     # 3rd party libraries
     'rest_framework',
     'corsheaders',
+    'cloudinary',
     
     # local apps
     'shop.apps.ShopConfig',
@@ -141,6 +146,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # THIRD PARTY APPS  SETTINGS
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config( 
+  cloud_name = env.str('CLOUD_NAME'),
+  api_key = env.str('CLOUDINARY_API_KEY'), 
+  api_secret = env.str('CLOUDINARY_API_SECRET')
+)
 
 # REST framework settings
 
