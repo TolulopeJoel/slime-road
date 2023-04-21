@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.views import Response, status
 
 from shop.models import Product
@@ -39,3 +39,21 @@ class OrderViewset(viewsets.ModelViewSet):
                 {'detail': 'This product is not available'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+class PayOut(generics.ListAPIView):
+    queryset = Order.objects.filter(paid=True)
+    serializer_class = OrderSerializer
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        
+        payouts = []
+        for order in queryset:
+            if order.product.creator == user:
+                payouts.append(order.id)
+                
+        return Order.objects.filter(id__in=payouts)
+                
+    
