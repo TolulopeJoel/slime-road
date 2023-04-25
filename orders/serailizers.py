@@ -6,8 +6,8 @@ from shop.serializers import ProductSerializer
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True, many=True)
-    
+    product = ProductSerializer(read_only=True)
+
     class Meta:
         model = Order
         fields = '__all__'
@@ -24,10 +24,15 @@ class OrderSerializer(serializers.ModelSerializer):
             paid = True
         elif payment_price < product_price:
             raise serializers.ValidationError(
-                {'detail': f'You can\'t pay {payment_price} for a {product_price} product'}
+                {'detail': f'You can\'t pay {payment_price} for a {product_price} product. Come on.'}
             )
 
-        order = Order(product=product, paid=paid, **validated_data)
+        order = Order(
+            product=validated_data['product'],
+            email=validated_data['email'],
+            price=validated_data['price'],
+            paid=paid,
+        )
         order.save()
 
         return order

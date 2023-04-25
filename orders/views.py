@@ -1,17 +1,17 @@
 from datetime import timedelta
-from decimal import Decimal
 
 from django.utils import timezone
-from rest_framework import generics, viewsets
+from rest_framework import generics, permissions, viewsets
 from rest_framework.views import Response, status
 
 from shop.models import Product
 
+from .mixins import CreatorPaidOrdersQuerysetMixin
 from .models import Order
 from .serailizers import OrderSerializer
 
 
-class OrderViewset(viewsets.ModelViewSet):
+class OrderViewset(CreatorPaidOrdersQuerysetMixin, viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
@@ -22,7 +22,7 @@ class OrderViewset(viewsets.ModelViewSet):
 
             serializer = OrderSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            order = serializer.save(product=product)
+            serializer.save(product=product)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Product.DoesNotExist:
@@ -32,46 +32,34 @@ class OrderViewset(viewsets.ModelViewSet):
             )
 
 
-class PayOut(generics.ListAPIView):
-    queryset = Order.objects.filter(paid=True)
+class PayOut(CreatorPaidOrdersQuerysetMixin, generics.ListAPIView):
     serializer_class = OrderSerializer
-    
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        user = self.request.user
-        
-        payouts = []
-        for order in queryset:
-            if order.product.creator == user:
-                payouts.append(order.id)
-                
-        return Order.objects.filter(id__in=payouts)
-    
-    # def get(self, request, *args, **kwargs):
-    #     total_earnings = 0
-    #     past_30_days = 0
-    #     past_7_days = 0
-    #     balance = 0
-        
-    #     paid_orders = super().get_queryset()
-        
-    #     # calculate total earnings for all orders
-    #     for order in paid_orders:
-    #         total_earnings += order.price
-        
-    #     # calculate earnings for past 30 days
-    #     paid_orders_30_days = paid_orders.filter(created_at__gte=timezone.now() - timedelta(days=30))
-    #     for order in paid_orders_30_days:
-    #         past_30_days += order.price
-        
-    #     # calculate earnings for past 7 days
-    #     paid_orders_7_days = paid_orders.filter(created_at__gte=timezone.now() - timedelta(days=7))
-    #     for order in paid_orders_7_days:
-    #         past_7_days += order.price
-        
-    #     return Response({
-    #         'total_earnings': total_earnings,
-    #         'past_30_days_earnings': past_30_days,
-    #         'past_7_days_earnings': past_7_days
-    #     }, status=status.HTTP_200_OK)
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get(self, request, *args, **kwargs):
+        total_earnings = 0
+        past_30_days = 0
+        past_7_days = 0
+
+        payouts = self.get_queryset()
+
+        # calculate total earnings for all payouts
+        for payout in payouts:
+            total_earnings += payout.price
+
+        # calculate earnings for past 30 days
+        payouts_30_days = payouts.filter(updated_at__gte=timezone.now() - timedelta(days=30))
+        for payout in payouts_30_days:
+            past_30_days += payout.price
+
+        # calculate earnings for past 7 days
+        payouts_7_days = payouts.filter(updated_at__gte=timezone.now() - timedelta(days=7))
+        for payout in payouts_7_days:
+            past_7_days += payout.price
+
+        return Response({
+            'balance': 0,
+            'total_earnings': total_earnings,
+            'past_30_days_earnings': past_30_days,
+            'past_7_days_earnings': past_7_days
+        }, status=status.HTTP_200_OK)

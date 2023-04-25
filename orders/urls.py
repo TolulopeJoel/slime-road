@@ -5,7 +5,7 @@ from rest_framework.routers import SimpleRouter
 from . import views
 
 urlpatterns = [
-    path('payouts/', views.PayOut.as_view(), name='payouts-list')
+    path('payouts/', views.PayOut.as_view(), name='payout-list')
 ]
 
 router = SimpleRouter()
