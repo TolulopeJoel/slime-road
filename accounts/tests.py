@@ -28,7 +28,7 @@ class TestLoginView(APITestCase):
         self.assertIn('access', response.data)
         self.assertIn('refresh', response.data)
 
-    def test_login_returns_400_on_invalid_credentials(self):
+    def test_login_returns_401_on_invalid_credentials(self):
         url = reverse('login')
         data = {
             'username': 'testcreator',
@@ -83,5 +83,46 @@ class TestCreatorProducts(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
+class TestUserLibrary(APITestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username='testuser',
+            password='testpassword',
+            email='testuser@example.com'
+        )
+        self.client.force_authenticate(user=self.user)
 
+        self.product1 = Product.objects.create(
+            name='Product 1',
+            description='Product 1 description',
+            price=10.99,
+            creator=self.user
+        )
+        self.product2 = Product.objects.create(
+            name='Product 2',
+            description='Product 2 description',
+            price=5.99,
+            creator=self.user
+        )
+
+        self.order = Order.objects.create(
+            product=self.product1,
+            email=self.user.email,
+            price=self.product1.price,
+            paid=True
+        )
+
+    def test_get_user_library(self):
+        url = reverse('user-library')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], self.product1.name)
+
+    def test_get_user_library_no_orders(self):
+        self.order.delete()
+        url = reverse('user-library')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
 
