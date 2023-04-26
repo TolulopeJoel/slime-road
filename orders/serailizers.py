@@ -21,10 +21,10 @@ class OrderSerializer(serializers.ModelSerializer):
         if payment_price == 0.00 and product_price == 0.00:
             paid = True
         elif payment_price >= product_price:
-            paid = True
+            paid = False
         elif payment_price < product_price:
             raise serializers.ValidationError(
-                {'detail': f'You can\'t pay {payment_price} for a {product_price} product. Come on.'}
+                {'detail': f'You can\'t pay ${payment_price} for a ${product_price} product. Come on.'}
             )
 
         order = Order(

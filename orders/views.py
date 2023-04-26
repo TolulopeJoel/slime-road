@@ -14,6 +14,7 @@ from .serailizers import OrderSerializer
 class OrderViewset(CreatorPaidOrdersQuerysetMixin, viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         try:
