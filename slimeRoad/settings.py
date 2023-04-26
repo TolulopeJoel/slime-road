@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-%5)_nhfb(7i0xt4*gaun--#qnb6@c!)ism9x-tdtqk+8q6$17w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app', 'localhost']
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     
     # 3rd party libraries
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
     'cloudinary',
     
@@ -180,9 +181,4 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = ''
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
