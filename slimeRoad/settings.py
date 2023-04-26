@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import dj_database_url
 import os
 from datetime import timedelta
 from environs import Env
@@ -31,7 +32,7 @@ SECRET_KEY = 'django-insecure-%5)_nhfb(7i0xt4*gaun--#qnb6@c!)ism9x-tdtqk+8q6$17w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['.vercel.app', 'localhost']
+ALLOWED_HOSTS = ['.railway.app', 'localhost']
 
 
 # Application definition
@@ -96,10 +97,13 @@ WSGI_APPLICATION = 'slimeRoad.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'passwordmanager',
     }
 }
+
+
+DATABASES['default'] =  dj_database_url.config()
 
 
 # Password validation
