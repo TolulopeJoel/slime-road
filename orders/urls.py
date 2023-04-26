@@ -10,6 +10,6 @@ urlpatterns = [
 
 router = SimpleRouter()
 
-router.register('orders', views.OrderViewset, basename='orders')
+router.register('orders', views.OrderViewset, basename='order')
 
 urlpatterns += router.urls
