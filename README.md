@@ -3,7 +3,7 @@
  
 ## About
 
-Slime Road is a digital application that empowers creators to sell their digital products directly to their audience. The application provides a user-friendly platform that enables creators to set up a customizable storefront, process payments securely, and manage customer data with ease. Creators can offer a variety of digital products such as ebooks, music, software, courses, and more. The application also allows creators to choose whether to offer their products as one-time purchases or subscriptions.
+Slime Road is a digital application that empowers creators to sell their digital products directly to their audience. The application provides a user-friendly platform that enables creators to set up a customizable storefront, process payments securely, and manage customer data with ease. Creators can offer a variety of digital products such as ebooks, music, software, courses, and more.
 
 One of the key features of Slime Road is its secure payment processing system, which enables creators to accept payments from customers in multiple currencies and through various payment gateways such as credit card, PayPal, and other popular methods. The application uses industry-standard security protocols to ensure that all transactions are encrypted and secure, protecting both creators and customers from fraudulent activity.
 
