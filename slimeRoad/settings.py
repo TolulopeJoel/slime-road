@@ -34,6 +34,8 @@ DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = ['.railway.app', 'localhost']
 
+CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
+
 
 # Application definition
 
