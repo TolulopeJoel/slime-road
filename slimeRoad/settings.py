@@ -48,11 +48,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # 3rd party libraries
+    'whitenoise',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'cloudinary',
-    'whitenoise',
     
     # local apps
     'shop.apps.ShopConfig',
@@ -65,8 +65,8 @@ AUTH_USER_MODEL = 'accounts.Creator'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -187,8 +187,9 @@ SIMPLE_JWT = {
 }
 
 CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000',
      'https://slime-road.netlify.app',
+     'https://slime-road.up.railway.app',
+     'http://localhost:3000',
 ]
 
 
