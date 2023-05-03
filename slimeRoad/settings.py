@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'slimeRoad.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'passwordmanager',
+        'NAME': 'slimeRoad',
     }
 }
 
@@ -192,11 +192,12 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = env.str('EMAIL_HOST')
+EMAIL_BACKEND = 'django_mailjet.backends.MailjetBackend'
+EMAIL_HOST = 'in-v3.mailjet.com'
 MAILJET_API_KEY = env.str('MAILJET_API_KEY')
 MAILJET_API_SECRET = env.str('MAILJET_API_SECRET')
 EMAIL_PORT = env.int('EMAIL_PORT')
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_TIMEOUT = 30
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL')
