@@ -192,15 +192,19 @@ CORS_ORIGIN_WHITELIST = [
      'https://slime-road.netlify.app',
      'https://slime-road.up.railway.app',
      'http://localhost:3000',
+     'https://in-v3.mailjet.com',
+     'https://api.mailjet.com/v3.1',
+     'https://api.asia.mailjet.com/v3.1',
+     'https://api.us.mailjet.com/v3.1',
 ]
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_HOST = 'in-v3.mailjet.com'
-# MAILJET_API_KEY = env.str('MAILJET_API_KEY')
-# MAILJET_API_SECRET = env.str('MAILJET_API_SECRET')
-# EMAIL_PORT = env.int('EMAIL_PORT')
-# EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = False
-# EMAIL_TIMEOUT = 30
-# DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL')
+EMAIL_BACKEND = 'django_mailjet.backends.MailjetBackend'
+EMAIL_HOST = 'in-v3.mailjet.com'
+MAILJET_API_KEY = env.str('MAILJET_API_KEY')
+MAILJET_API_SECRET = env.str('MAILJET_API_SECRET')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_TIMEOUT = 30
+DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL')
