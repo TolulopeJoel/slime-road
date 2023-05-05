@@ -190,12 +190,8 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
      'https://slime-road.netlify.app',
-     'https://slime-road.up.railway.app',
      'http://localhost:3000',
      'https://in-v3.mailjet.com',
-     'https://api.mailjet.com/v3.1',
-     'https://api.asia.mailjet.com/v3.1',
-     'https://api.us.mailjet.com/v3.1',
 ]
 
 
