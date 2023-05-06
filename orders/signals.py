@@ -13,6 +13,6 @@ def send_product_email(sender, instance, created, **kwargs):
     if instance.paid:
         subject = 'Product Order Confirmation'
         message = f'Thank you for your order. Your {instance.product.name} has been successfully purchased.\n Access it here: {instance.product.link}'
-        from_email = env.str('DEFAULT_FROM_EMAIL')
+        from_email = 'toluisjoel@gmail.com'
         recipient_list = [instance.email]
         send_mail(subject, message, from_email, recipient_list)
