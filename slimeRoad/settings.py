@@ -34,7 +34,7 @@ DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = ['.railway.app', '.onrender.com', 'localhost']
 
-CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://*.railway.app', 'https://*.onrender.com']
 
 
 # Application definition
