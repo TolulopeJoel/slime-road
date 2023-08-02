@@ -10,11 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-import dj_database_url
 import os
 from datetime import timedelta
-from environs import Env
 from pathlib import Path
+
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
+import dj_database_url
+from environs import Env
 
 env = Env()
 env.read_env()
@@ -46,14 +50,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # 3rd party libraries
     'whitenoise',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'cloudinary',
-    
+
     # local apps
     'shop.apps.ShopConfig',
     'accounts.apps.AccountsConfig',
@@ -106,7 +110,7 @@ DATABASES = {
 }
 
 
-DATABASES['default'] =  dj_database_url.config()
+DATABASES['default'] = dj_database_url.config()
 
 
 # Password validation
@@ -158,14 +162,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # THIRD PARTY APPS  SETTINGS
 
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 
-cloudinary.config( 
-  cloud_name = env.str('CLOUD_NAME'),
-  api_key = env.str('CLOUDINARY_API_KEY'), 
-  api_secret = env.str('CLOUDINARY_API_SECRET')
+cloudinary.config(
+    cloud_name=env.str('CLOUD_NAME'),
+    api_key=env.str('CLOUDINARY_API_KEY'),
+    api_secret=env.str('CLOUDINARY_API_SECRET')
 )
 
 # REST framework settings
@@ -189,9 +190,9 @@ SIMPLE_JWT = {
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-     'https://slime-road.netlify.app',
-     'http://localhost:3000',
-     'https://in-v3.mailjet.com',
+    'https://slime-road.netlify.app',
+    'http://localhost:3000',
+    'https://in-v3.mailjet.com',
 ]
 
 

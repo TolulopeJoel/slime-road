@@ -9,6 +9,10 @@ from shop.models import Product
 
 
 class TestLoginView(APITestCase):
+    """
+    Test cases for the LoginView API.
+    """
+
     def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
@@ -18,6 +22,9 @@ class TestLoginView(APITestCase):
         )
 
     def test_login_returns_token(self):
+        """
+        Test successful user login returns access and refresh tokens.
+        """
         url = reverse('login')
         data = {
             'username': 'testcreator',
@@ -29,6 +36,9 @@ class TestLoginView(APITestCase):
         self.assertIn('refresh', response.data)
 
     def test_login_returns_401_on_invalid_credentials(self):
+        """
+        Test login returns 401 Unauthorized on invalid credentials.
+        """
         url = reverse('login')
         data = {
             'username': 'testcreator',
@@ -39,6 +49,10 @@ class TestLoginView(APITestCase):
 
 
 class TestCreatorProducts(APITestCase):
+    """
+    Test cases for the CreatorProducts API view.
+    """
+
     def setUp(self):
         self.client = APIClient()
         self.creator = get_user_model().objects.create_user(
@@ -68,6 +82,9 @@ class TestCreatorProducts(APITestCase):
         )
 
     def test_returns_only_creator_products(self):
+        """
+        Test API view returns only products created by the authenticated user (creator).
+        """
         url = reverse('user-products')
         token = RefreshToken.for_user(self.creator).access_token
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
@@ -78,12 +95,19 @@ class TestCreatorProducts(APITestCase):
         self.assertEqual(response.data[1]['name'], 'Product 1')
 
     def test_returns_401_if_not_authenticated(self):
+        """
+        Test API view returns 401 Unauthorized if user is not authenticated.
+        """
         url = reverse('user-products')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class TestUserLibrary(APITestCase):
+    """
+    Test cases for the UserLibrary API view.
+    """
+
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             username='testuser',
@@ -113,6 +137,9 @@ class TestUserLibrary(APITestCase):
         )
 
     def test_get_user_library(self):
+        """
+        Test API view returns the library of products bought by the authenticated user.
+        """
         url = reverse('user-library')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -120,9 +147,11 @@ class TestUserLibrary(APITestCase):
         self.assertEqual(response.data[0]['name'], self.product1.name)
 
     def test_get_user_library_no_orders(self):
+        """
+        Test API view returns an empty library when the user has no orders.
+        """
         self.order.delete()
         url = reverse('user-library')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 0)
-

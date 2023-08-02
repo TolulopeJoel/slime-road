@@ -1,11 +1,12 @@
 from rest_framework import serializers
-
 from .models import Order
-
 from shop.serializers import ProductSerializer
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Order model.
+    """
     product = ProductSerializer(read_only=True)
 
     class Meta:
@@ -13,6 +14,9 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
+        """
+        Create a new order based on the validated data.
+        """
         product = validated_data['product']
         payment_price = validated_data['price']
         product_price = product.price

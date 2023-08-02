@@ -5,6 +5,9 @@ from accounts.serializers import CreatorSerializer
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Product model.
+    """
     creator = CreatorSerializer(read_only=True)
     slug = serializers.SlugField(read_only=True)
 

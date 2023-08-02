@@ -10,30 +10,47 @@ from .serializers import RegisterUserSerializer
 
 
 class LoginView(TokenObtainPairView):
+    """
+    API view for user login using JWT token.
+    """
     serializer_class = TokenObtainPairSerializer
 
 
 class RegisterView(generics.CreateAPIView):
+    """
+    API view for user registration.
+    """
     serializer_class = RegisterUserSerializer
     permission_classes = [permissions.AllowAny]
 
 
 class CreatorProducts(generics.ListAPIView):
+    """
+    API view to get a list of products created by the authenticated user (creator).
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        """
+        Get a queryset of products created by the authenticated user (creator).
+        """
         user = self.request.user
         return super().get_queryset().filter(creator=user)
 
 
 class UserLibrary(generics.ListAPIView):
+    """
+    API view to get a list of products bought by the authenticated user (in their library).
+    """
     serializer_class = ProductSerializer
 
     def get_queryset(self):
+        """
+        Get a queryset of products bought by the authenticated user (in their library).
+        """
         user = self.request.user
         orders = Order.objects.filter(paid=True, email=user.email)
         bought_products = Product.objects.filter(orders__in=orders)
-        
         return bought_products
