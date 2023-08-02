@@ -14,7 +14,7 @@ class Product(models.Model):
     image = CloudinaryField('image')
     # link to the creator's product. This could be anything digital (ex: pdf, video, notion page)
     link = models.URLField()
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     created_at = models.DateTimeField(auto_now_add=True)
