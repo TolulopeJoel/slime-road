@@ -17,7 +17,6 @@ from pathlib import Path
 import cloudinary
 import cloudinary.api
 import cloudinary.uploader
-import dj_database_url
 from environs import Env
 
 env = Env()
@@ -31,15 +30,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%5)_nhfb(7i0xt4*gaun--#qnb6@c!)ism9x-tdtqk+8q6$17w'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['.railway.app', '.onrender.com', 'localhost']
-
-CSRF_TRUSTED_ORIGINS = ['https://*.railway.app', 'https://*.onrender.com']
-
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 # Application definition
 
@@ -102,15 +98,7 @@ WSGI_APPLICATION = 'slimeRoad.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'slimeRoad',
-    }
-}
-
-
-DATABASES['default'] = dj_database_url.config()
+DATABASES = {'default': env.db('DATABASE_URL')}
 
 
 # Password validation
@@ -162,7 +150,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # THIRD PARTY APPS  SETTINGS
 
-
 cloudinary.config(
     cloud_name=env.str('CLOUD_NAME'),
     api_key=env.str('CLOUDINARY_API_KEY'),
@@ -178,6 +165,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer'
+    ],
 }
 
 # Simple JWT settings
@@ -187,21 +177,32 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+# CORS settings
+
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = [
-    'https://slime-road.netlify.app',
-    'http://localhost:3000',
-    'https://in-v3.mailjet.com',
-]
+CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST')
 
+# Email settings
 
-EMAIL_BACKEND = 'django_mailjet.backends.MailjetBackend'
-EMAIL_HOST = 'in-v3.mailjet.com'
-MAILJET_API_KEY = env.str('MAILJET_API_KEY')
-MAILJET_API_SECRET = env.str('MAILJET_API_SECRET')
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+MAILJET_API_KEY = env('MAILJET_API_KEY')
+MAILJET_API_SECRET = env('MAILJET_API_SECRET')
 EMAIL_PORT = env.int('EMAIL_PORT')
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_TIMEOUT = 30
-DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')
+EMAIL_TIMEOUT = env.int('EMAIL_TIMEOUT')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+
+# Security
+
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = not DEBUG
+
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
+
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
