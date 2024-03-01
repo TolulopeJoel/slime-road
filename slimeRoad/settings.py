@@ -17,14 +17,17 @@ from pathlib import Path
 import cloudinary
 import cloudinary.api
 import cloudinary.uploader
-from environs import Env
+import environ
 
-env = Env()
-env.read_env()
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -167,6 +170,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer'
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
 }
 
@@ -206,3 +210,8 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
 
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
+
+# Payment Settings
+
+PAYSTACK_API_KEY = env('PAYSTACK_API_KEY')
+PAYSTACK_SECRET_KEY = env('PAYSTACK_SECRET_KEY')

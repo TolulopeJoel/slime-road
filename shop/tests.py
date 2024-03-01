@@ -109,10 +109,7 @@ class ProductListTests(APITestCase):
         Test retrieving a list of products via API.
         """
         url = reverse('product-list')
-        response = self.client.get(url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 0)
-
+        response = self._extracted_from_test_product_list_retrieve_6(url, 0)
         product = Product.objects.create(
             creator=self.user,
             name='Test Product',
@@ -121,10 +118,15 @@ class ProductListTests(APITestCase):
             slug='test-product',
             price='10.99'
         )
-        response = self.client.get(url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        response = self._extracted_from_test_product_list_retrieve_6(url, 1)
         self.assertEqual(response.data[0]['name'], 'Test Product')
+
+    def _extracted_from_test_product_list_retrieve_6(self, url, arg1):
+        result = self.client.get(url, format='json')
+        self.assertEqual(result.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(result.data), arg1)
+
+        return result
 
     def test_product_list_update(self):
         """
