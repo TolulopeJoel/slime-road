@@ -50,28 +50,20 @@ class PayOut(CreatorPaidOrdersQuerysetMixin, generics.ListAPIView):
         """
         Get the creator's earnings and balance information.
         """
-        total_earnings = 0
-        past_30_days = 0
-        past_7_days = 0
-
         payouts = self.get_queryset()
 
-        # Calculate total earnings for all payouts
-        for payout in payouts:
-            total_earnings += payout.price
-
+        total_earnings = sum(payout.price for payout in payouts)
         # Calculate earnings for past 30 days
         payouts_30_days = payouts.filter(
-            updated_at__gte=timezone.now() - timedelta(days=30))
-        for payout in payouts_30_days:
-            past_30_days += payout.price
+            updated_at__gte=timezone.now() - timedelta(days=30)
+        )
 
+        past_30_days = sum(payout.price for payout in payouts_30_days)
         # Calculate earnings for past 7 days
         payouts_7_days = payouts.filter(
-            updated_at__gte=timezone.now() - timedelta(days=7))
-        for payout in payouts_7_days:
-            past_7_days += payout.price
-
+            updated_at__gte=timezone.now() - timedelta(days=7)
+        )
+        past_7_days = sum(payout.price for payout in payouts_7_days)
         return Response({
             'balance': 0,  # Placeholder for balance calculation
             'total_earnings': total_earnings,

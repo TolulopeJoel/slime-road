@@ -46,8 +46,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         Create a new user based on the validated data.
         """
         validated_data.pop('password2')
-        user = get_user_model().objects.create_user(**validated_data)
-        return user
+        return get_user_model().objects.create_user(**validated_data)
 
     def validate(self, attrs):
         """

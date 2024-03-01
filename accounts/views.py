@@ -52,5 +52,4 @@ class UserLibrary(generics.ListAPIView):
         """
         user = self.request.user
         orders = Order.objects.filter(paid=True, email=user.email)
-        bought_products = Product.objects.filter(orders__in=orders)
-        return bought_products
+        return Product.objects.filter(orders__in=orders)
