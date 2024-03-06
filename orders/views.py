@@ -6,7 +6,7 @@ from rest_framework import generics, permissions, viewsets
 from rest_framework.views import APIView, Response, status
 
 from services.paystack import PayStackSerivce
-from shop.models import Product
+from apps.shop.models import Product
 
 from .mixins import CreatorPaidOrdersQuerysetMixin
 from .models import Order

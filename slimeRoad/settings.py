@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
 
     # local apps
-    'shop.apps.ShopConfig',
+    'apps.shop.apps.ShopConfig',
     'apps.accounts.apps.AccountsConfig',
     'orders.apps.OrdersConfig',
 ]

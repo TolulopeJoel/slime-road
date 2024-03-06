@@ -2,9 +2,9 @@ from rest_framework import generics, permissions
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from apps.shop.models import Product
+from apps.shop.serializers import ProductSerializer
 from orders.models import Order
-from shop.models import Product
-from shop.serializers import ProductSerializer
 
 from .serializers import RegisterUserSerializer
 
