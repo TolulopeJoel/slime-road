@@ -22,10 +22,6 @@ class OrderSerializer(serializers.ModelSerializer):
         Create a new order based on the validated data.
         """
         product = validated_data.get('product')
-
-        if not product:
-            return NotFound('Product not found')
-
         payment_price = validated_data.get('price', 0)
         product_price = product.price
         is_paid = False
