@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from apps.shop.models import Product
 from apps.shop.serializers import ProductSerializer
-from orders.models import Order
+from apps.orders.models import Order
 
 from .serializers import RegisterUserSerializer
 

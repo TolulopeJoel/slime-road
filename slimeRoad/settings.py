@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     # local apps
     'apps.shop.apps.ShopConfig',
     'apps.accounts.apps.AccountsConfig',
-    'orders.apps.OrdersConfig',
+    'apps.orders.apps.OrdersConfig',
 ]
 
 AUTH_USER_MODEL = 'accounts.Creator'
