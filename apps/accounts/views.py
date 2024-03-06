@@ -45,6 +45,7 @@ class UserLibrary(generics.ListAPIView):
     API view to get a list of products bought by the authenticated user (in their library).
     """
     serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         """
