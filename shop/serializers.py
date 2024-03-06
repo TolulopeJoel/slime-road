@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
+from apps.accounts.serializers import CreatorSerializer
+
 from .models import Product
-from accounts.serializers import CreatorSerializer
 
 
 class ProductSerializer(serializers.ModelSerializer):
