@@ -1,8 +1,9 @@
 from datetime import timedelta
 
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, permissions, viewsets
-from rest_framework.views import Response, status
+from rest_framework.views import APIView, Response, status
 
 from services.paystack import PayStackSerivce
 from shop.models import Product
@@ -60,6 +61,24 @@ class OrderViewset(viewsets.ModelViewSet):
             {'status': False, 'message': 'Couldn\'t process payment, try again'},
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class VerifyOrderPaymentView(APIView):
+    def get(self, request, *args, **kwargs):
+        order_id = kwargs.get('order_id')
+        order = get_object_or_404(Order, pk=order_id)
+
+        if order.paid:
+            return Response({'message': 'Payment was successful'})
+
+        paystack = PayStackSerivce()
+        if paystack.verify_payment(order.paystack_ref):
+            order.paid = True
+            order.save()
+
+            return Response({'message': 'Payment was successful'})
+
+        return Response({'message': 'Payment failed, try again'})
 
 
 class PayOut(CreatorPaidOrdersQuerysetMixin, generics.ListAPIView):
