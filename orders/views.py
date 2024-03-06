@@ -37,6 +37,9 @@ class OrderViewset(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         order: Order = serializer.save(product=product)
 
+        if order.price == 0.00:
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         paystack = PayStackSerivce()
 
         pstack_data = paystack.initialise_payment(
