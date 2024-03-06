@@ -1,12 +1,9 @@
 from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from environs import Env
 
 from .models import Order
 
-env = Env()
-env.read_env()
 
 @receiver(post_save, sender=Order)
 def send_product_email(sender, instance, created, **kwargs):

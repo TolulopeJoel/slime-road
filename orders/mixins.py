@@ -9,5 +9,4 @@ class CreatorPaidOrdersQuerysetMixin:
 
     def get_queryset(self):
         user = self.request.user
-        orders = Order.objects.filter(paid=True, product__creator=user)
-        return orders
+        return Order.objects.filter(paid=True, product__creator=user)

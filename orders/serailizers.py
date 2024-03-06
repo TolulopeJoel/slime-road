@@ -1,6 +1,9 @@
 from rest_framework import serializers
-from .models import Order
+from rest_framework.exceptions import NotFound
+
 from shop.serializers import ProductSerializer
+
+from .models import Order
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -11,32 +14,28 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
+        read_only_fields = ['paystack_ref']
         fields = '__all__'
 
     def create(self, validated_data):
         """
         Create a new order based on the validated data.
         """
-        product = validated_data['product']
-        payment_price = validated_data['price']
+        product = validated_data.get('product')
+        payment_price = validated_data.get('price', 0)
         product_price = product.price
+        is_paid = False
 
-        paid = False
         if payment_price == 0.00 and product_price == 0.00:
-            paid = True
-        elif payment_price >= product_price:
-            paid = False
+            is_paid = True
         elif payment_price < product_price:
-            raise serializers.ValidationError(
-                {'detail': f'You can\'t pay ${payment_price} for a ${product_price} product. Come on.'}
-            )
+            raise serializers.ValidationError({
+                "detail": f" You can't pay ${payment_price} for a ${product_price} product. Come on!"
+            })
 
-        order = Order(
+        return Order.objects.create(
             product=validated_data['product'],
             email=validated_data['email'],
-            price=validated_data['price'],
-            paid=paid,
+            price=payment_price,
+            paid=is_paid,
         )
-        order.save()
-
-        return order
