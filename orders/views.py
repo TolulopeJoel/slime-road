@@ -4,6 +4,7 @@ from django.utils import timezone
 from rest_framework import generics, permissions, viewsets
 from rest_framework.views import Response, status
 
+from services.paystack import PayStackSerivce
 from shop.models import Product
 
 from .mixins import CreatorPaidOrdersQuerysetMixin
@@ -11,7 +12,7 @@ from .models import Order
 from .serailizers import OrderSerializer
 
 
-class OrderViewset(CreatorPaidOrdersQuerysetMixin, viewsets.ModelViewSet):
+class OrderViewset(viewsets.ModelViewSet):
     """
     Viewset for managing orders.
     """
@@ -26,17 +27,36 @@ class OrderViewset(CreatorPaidOrdersQuerysetMixin, viewsets.ModelViewSet):
         try:
             product_id = request.data.get('product_id')
             product = Product.objects.get(id=product_id)
-
-            serializer = OrderSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(product=product)
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Product.DoesNotExist:
             return Response(
                 {'detail': 'This product is not available'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+        serializer = OrderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        order: Order = serializer.save(product=product)
+
+        paystack = PayStackSerivce()
+
+        pstack_data = paystack.initialise_payment(
+            order.email,
+            order.price,
+        )
+
+        if pstack_data['status']:
+            order.paystack_ref = pstack_data['data']['reference']
+            order.save()
+
+            return Response(
+                {**serializer.data, **pstack_data['data']},
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            {'status': False, 'message': 'Couldn\'t process payment, try again'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class PayOut(CreatorPaidOrdersQuerysetMixin, generics.ListAPIView):

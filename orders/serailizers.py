@@ -32,7 +32,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
         if payment_price == 0.00 and product_price == 0.00:
             is_paid = True
-        elif payment_price <= product_price:
+        elif payment_price < product_price:
             raise serializers.ValidationError({
                 "detail": f" You can't pay ${payment_price} for a ${product_price} product. Come on!"
             })
